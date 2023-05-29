@@ -41,6 +41,8 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+bool uploaded = false;
+
 class _MyAppState extends State<MyApp> {
   // FilePickerResult? result;
   PlatformFile? pickedfile;
@@ -55,6 +57,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future _uploadFile() async {
+    setState(() {
+      uploaded = false;
+    });
     final path = 'files/${pickedfile!.name}';
     final file = File(pickedfile!.path!);
 
@@ -66,7 +71,11 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         uploadTask = referenceDir.putFile(file);
       });
-      final snapshot = await uploadTask!.whenComplete(() {});
+      final snapshot = await uploadTask!.whenComplete(() {
+        setState(() {
+          uploaded = true;
+        });
+      });
       final urlDownload = await snapshot.ref.getDownloadURL();
       print('Download link: $urlDownload');
       setState(() {
@@ -134,6 +143,7 @@ class _MyAppState extends State<MyApp> {
                             onTap: () {
                               setState(() {
                                 pickedfile = null;
+                                uploaded = false;
                               });
                             },
                           )
@@ -175,6 +185,23 @@ class _MyAppState extends State<MyApp> {
                   },
                   child: Text('Upload flie')),
               if (uploadTask?.snapshotEvents != null) buildProgress(),
+              if (uploaded)
+                Row(
+                  children: [
+                    Icon(
+                      Icons.done,
+                      color: Colors.green,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      'Uploaded Successfully',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                )
             ],
           ),
         ),
