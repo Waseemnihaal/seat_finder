@@ -17,6 +17,7 @@ main.dart:
 -This is the main file where all funtions and methodologies are implemented to build the application.
 -MyApp is the class which extends StatefulWidget and calls of compartment.dart to render the required UI.
 -This compartment.dart file has been called in an ScrollablePositionedList.builder.
+-Auto scroll to selected seat has implemented.
 
 compartment.dart:
 
